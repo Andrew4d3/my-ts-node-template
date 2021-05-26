@@ -1,0 +1,47 @@
+*.nyc_output
+*.csv
+*.dat
+*.iml
+*.log
+*.out
+*.pid
+*.seed
+*.sublime-*
+*.swo
+*.swp
+*.tgz
+*.xml
+
+# MacOsX
+.DS_Store
+
+# IDE
+.idea
+.project
+.strong-pm
+.vscode
+
+dist
+coverage
+node_modules
+npm-debug.log
+.vscode/settings.json
+.nyc_output/
+server/datasources.local.json
+restClient.rest
+
+# Environment
+.env.local
+.env.dev
+.env.prod
+.env
+.npmrc
+
+# logs
+logs
+
+# data volume
+data
+
+# docs
+docs
