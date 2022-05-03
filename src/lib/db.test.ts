@@ -1,11 +1,10 @@
 import mongoose from 'mongoose';
-import { mocked } from 'ts-jest/utils';
 import DbConnection from './db';
 
 jest.mock('../config');
 jest.mock('mongoose');
 
-const mockedMongoose = mocked(mongoose);
+const mockedMongoose = jest.mocked(mongoose);
 
 describe('DbConnection', () => {
   beforeAll(async () => {

@@ -1,10 +1,9 @@
-import { mocked } from 'ts-jest/utils';
 import { createMockContext } from '@shopify/jest-koa-mocks';
 import errorMiddleWare from './error';
-import config from '../../config';
+import config from '../config';
 
-jest.mock('../../config');
-const mockedConfig = mocked(config, true);
+jest.mock('../config');
+const mockedConfig = jest.mocked(config, true);
 
 describe('Error Middleware', () => {
   const nextStub = jest.fn();
