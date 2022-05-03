@@ -1,16 +1,9 @@
-import { mocked } from 'ts-jest/utils';
 import { createMockContext } from '@shopify/jest-koa-mocks';
 import loggerMiddleware from './logger';
-import config from '../../config';
-import LoggerContext from '../logger';
+import LoggerContext from '../lib/logger';
 
-jest.mock('../../config');
-const mockedConfig = mocked(config, true);
-
-jest.mock('../logger');
-const mockedLoggerCtx = mocked(LoggerContext, true);
-
-jest.mock('../logger/loader');
+jest.mock('../lib/logger');
+const mockedLoggerCtx = jest.mocked(LoggerContext, true);
 
 const mockedHeaders = {
   'x-transaction-id': 'transacion-123',
@@ -23,7 +16,6 @@ describe('Logger Middleware', () => {
   let testCtx: any;
 
   beforeAll(() => {
-    mockedConfig.application.productId = 'TEST-PRODUCT';
     testCtx = createMockContext({
       headers: mockedHeaders,
     });
@@ -36,7 +28,6 @@ describe('Logger Middleware', () => {
 
     expect(logPayload).toMatchObject({
       transactionId: mockedHeaders['x-transaction-id'],
-      productId: mockedConfig.application.productId,
       sessionId: mockedHeaders['x-session-id'],
       channelId: mockedHeaders['x-channel-id'],
       consumerName: mockedHeaders['x-consumer'],
