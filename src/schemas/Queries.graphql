@@ -1,0 +1,17 @@
+# Sample object, delete this once you understand how it works
+type User {
+  _id: ID!
+  name: String!
+  email: String!
+}
+
+type Query {
+  # Sample queries, delete them once you understand how they work
+  echo(msg: String): String
+  throwError: Boolean
+  throwCustomError: Boolean
+}
+
+type Mutation {
+  authorized: String
+}

@@ -2,7 +2,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   collectCoverageFrom: ['src/**/*.ts'],
-  testPathIgnorePatterns: ['/lib/', '/node_modules/'],
+  testPathIgnorePatterns: ['/node_modules/'],
   // Uncomment this lines after you've included your tests
   // coverageThreshold: {
   //   global: {
