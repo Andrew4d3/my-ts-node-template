@@ -8,8 +8,7 @@ const errorMiddleWare: Middleware<StateContext> = async (ctx, next) => {
     await next();
   } catch (err) {
     const error = err as CustomError;
-    ctx.response.status = error.isCustomError ? error.statusCode : 500;
-
+    ctx.response.status = error.isCustomError || error.statusCode ? error.statusCode : 500;
     ctx.response.body = {
       name: error.name,
       message: error.message,
