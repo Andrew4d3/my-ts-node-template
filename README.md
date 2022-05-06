@@ -1,141 +1,162 @@
-# [Nombre del Proyect]
+# My TS Node Template (GraphQL)
 
-[[Descripcion del Proyecto]]
+[[Project Description]]
 
-> Antes de comenzar a usar este template por favor leer las instrucciones [aqui](tutorials/Instrucciones.md)
+## Template Description
 
-## Variables de entorno y npmrc
+> Delete this section after initializing your project
 
-Antes de iniciar es necesario contar con 2 archivos en la raiz del proyecto:
+### **How to use this template?**
 
-- Un archivo `.env` conteniendo las variables de entorno que utilizara la API, debe tener la siguiente estructura:
+Clone this repo and then delete the `.git` folder so that you can start a new git repository using: `git init`
+
+### **Stack**
+
+- Koa as web server (with complements)
+- Pino as logger library
+- Jest as testing framework
+- Mongoose ORM integration
+- JWT Integration through middleware
+- Apollo server as Graphql interpreter
+
+### **Logger**
+
+This template includes a logger integration that you can use through the Koa context:
+
+```ts
+ctx.state.loggerCtx.info('Hello');
+```
+
+Which will print the following log entry:
+
+```
+{"level":"info","time":"2022-05-06T11:55:45.792Z","pid":17464,"hostname":"andrew-XPS-15-9560","requestId":"512376ef-d69d-4d34-9ec9-e0d56b087820","transactionId":"","sessionId":"","channelId":"WEB","consumerName":"","environment":"dev","payload":{"foo":"bar"},"message":"Hello"}
+```
+
+Additionaly, If you're working with microservices, you can propagate correlation IDs in your log entries by using the following headers:
+
+- `x-transaction-id`: To identify an end-to-end call chain.
+- `x-session-id`: To identify multiple related call chains.
+- `x-channel-id`: To identify the channel that was used to start the call chain. (web, mobile app, etc).
+- `x-consumer`: To identify the caller service.
+
+### **Error management and logging**
+
+All errors in your resolvers will be caught and logged using a special middleware. Check the sample resolvers at `src/resolvers/index.ts` to see how it works.
+
+### **Custom Errors**
+
+Optionally, you can use the CustomError component found at `src/lib/CustomError.ts`, if you want to provide more detailed errors in your logs and errors:
+
+```ts
+import CustomError from '../lib/CustomError';
+
+// ...
+
+throw new CustomError('Custom Error', { data: { serverResponse: 'BAD GATEWAY' }, statusCode: 503 });
+```
+
+## Environment Variables
+
+Before starting, you should create a `.env` at the project's root. Its content should be something like this:
 
 ```
 PORT=3000
 NODE_ENV=dev
-NODE_LOG_FILE_PATH=./logs/
-JWT_SECRET=<TU JWT SECRET>
-MONGO_URI=<TU MONGODB CONNECTION STRING>
+JWT_SECRET=<JWT SECRET>
+MONGO_URI=<MONGODB CONNECTION STRING>
 ```
 
-- Y un archivo de configuracion de NPM (`.npmrc`), el cual se utilizara para poder descargar la libreria FIF Common Logger del registro NPM de FIF. Debe contar con la siguiente estructura:
+In production, environment variables should be injected directly into the node process.
 
-```
-registry=https://npm-registry.fif.tech/
-//npm-registry.fif.tech/:_authToken="<SECRET_TOKEN>"
-```
+## Development mode with Docker
 
-**NOTA**: El secret token del archivo `.npmrc` se puede solicitar al Technical Lead o focal point.
-
-## Iniciar la API localmente con Docker
-
-- Primero construir la imagen:
+- To start project through docker, first you should build the image:
 
 ```sh
 npm run docker:dev:build
 ```
 
-- Ahora se puede iniciar la API
+- Now the only thing you need to do is to run the dockerized app:
 
 ```sh
 npm run docker:dev:start
 ```
 
-- La aplicacion deberia iniciar en el puerto 3000 o cualquier otro indicado por el archivo `.env`
+- Application should start at port 3000 or any other port indicated by the `.env` file.
 
-- De igual manera se recomienda instalar las dependencias en el host para obtener una mejor experiencia con el editor. Por lo tanto correr:
-
-```sh
-npm install
-```
-
-## Iniciar la API desde el host (sin docker)
-
-- Primero asegurarse de tener la version de node 14.6.X
-- Instalar las dependencias:
+- Even if you use Docker for development, I recommend that you install all the project dependecies locally (in host) so you can get a better experience with the code editor.
 
 ```sh
 npm install
 ```
 
-- Iniciar la aplicacion en modo desarrollo:
+## Development mode with host
+
+- First be sure you're running Node version: 14.6.X
+- Then, install dependencies:
+
+```sh
+npm install
+```
+
+- Now you can start the web server in dev mode:
 
 ```sh
 npm run dev
 ```
 
-- La aplicacion deberia iniciar en el puerto 3000 o cualquier otro indicado por el archivo `.env`
+- Application should start at port 3000 or any other port indicated by the `.env` file.
 
-## Debuguear la aplicacion
+## Debugging
 
-La aplicacion puede ser debugueada desde docker o el host.
+You can run the application in debug mode using the following commands:
 
-- Con docker:
+- If you're working with docker:
 
 ```sh
 npm run docker:dev:debug
 ```
 
-- Con host:
+- If you're working from host:
 
 ```sh
 npm run debug
 ```
 
-- Despues de correr ambos comandos, un servidor de debugging debe quedar activo a traves del puerto 9229. Para asi poder utilizarlo usando las Chrome Developer tools o el mismo debugger de VSCode.
+- After running these commands, a debug server should start through port 9229. So that you can use it with whichever Node debugging tool you prefer, like the Chrome developer tool or the VSCode debugger.
 
-## Pruebas Unitarias o de Integracion
+## Automated Tests
 
-- Para correr la suite de pruebas se recomienda hacerlo desde el host (para una mejor experiencia con el editor). Para eso correr:
+- To run the test suite, simply enter:
 
 ```sh
 npm test
 ```
 
-- Para una mejor experiencia con TDD se puede correr en modo `watch`:
+- For TDD, I recommend using the "watch" mode:
 
 ```sh
 npm run watch
 ```
 
-- En caso de querer conocer la cobertura, utilizar el siguiente comando:
+- To see code coverage, run:
 
 ```sh
 npm run coverage
 ```
 
-## Pre-commits
+> You can change your code coverage requirements in the file `jest.config.js` found at the project's root.
 
-Este proyecto esta configurado para que se ejecuten una serie de verificaciones antes de hacer cualquier commit. Inicialmente se ejecutan estos comandos:
-
-- Para verificar que se cumplan las reglas relacionadas al estilo de codigo (linter)
+- For static testing (linter) you can run:
 
 ```sh
 npm run lint
 ```
 
-- En caso de que el linter falle, pueden hacerse una correccion automatica usando el siguiente comando:
+## Running in production
 
-```sh
-npm run lint:fix
-```
+This projects comes with a Dockerfile that you can use for deploying your application in production (path: `docker/deploy/Dockerfile`). If you prefer to write your own production pipeline or image, be sure to include the following instructions:
 
-- Y la cobertura de pruebas
-
-```sh
-npm run coverage
-```
-
-No podra realizarse el commit si alguna de estos dos ejecuciones falla. Tener en cuenta que aunque todas las pruebas pasen, sino se cumple el minimo threshold de cobertura, igual el segundo comando fallara.
-
-## Compilar proyecto para Produccion o QA
-
-Este template ya cuenta con un archivo `.gitlab-ci.yml` con los pasos iniciales del pipeline (lint, tests, compilacion, verificacion de vulnerabilidades/exposicion de secretos). A la hora de deployar, sera necesario descomentar los pasos finales.
-
-Adicionalmente es necesario cambiar las configuraciones que hacen referencia al nombre del proyecto/artefacto. Dichas configuraciones se indican usando comentarios. Por ejemplo:
-
-```yml
-variables:
-  # Change this to the corresponding IMAGE_NAME
-  IMAGE_NAME: hub.fif.tech/seguros-core/ts-template-api
-```
+- `npm run build`: These will build the JS files and store them at the dist folder.
+- `npm start`: This should start the project from the the dist folder.
